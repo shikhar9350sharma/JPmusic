@@ -13,7 +13,6 @@ const NewRlease = () => {
             .then((data) => {
                 const slicedSongs = data.slice(0, 6);
                 setNewReleaseSongs(slicedSongs);     // Local state for rendering
-                setPlayerSongs(slicedSongs);                // 🔥 Update context for navigation
             })
             .catch((err) => console.log('Fetching song cover error: ', err));
     }, []);
@@ -24,7 +23,8 @@ const NewRlease = () => {
         setPlayerSongs(newReleaseSongs); 
         setCurrentSong(gana);
         setCurrentIndex(index); // 🔥 This enables next/previous navigation
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        // setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+        navigate(`/app/songs/${gana.id}`)
     };
    
     return (

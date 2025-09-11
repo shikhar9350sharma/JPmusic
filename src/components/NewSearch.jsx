@@ -8,7 +8,7 @@ const NewSearch = () => {
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter' && query.trim()) {
-      navigate(`/search?q=${encodeURIComponent(query.trim())}`);
+      navigate(`/app/search?q=${encodeURIComponent(query.trim())}`);
     }
   };
 

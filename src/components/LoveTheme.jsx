@@ -13,7 +13,6 @@ const LoveTheme = () => {
             .then((data) => {
                 const slicedSongs = data.slice(10, 13);
                 setLoveThemeSongs(slicedSongs);
-                setPlayerSongs(slicedSongs);
             })
             .catch((err) => console.error('Fetch error from LoveTheme component:', err));
     }, []);
@@ -23,7 +22,8 @@ const LoveTheme = () => {
         setPlayerSongs(LoveThemeSongs);
         setCurrentSong(gana);
         setCurrentIndex(index);
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        // setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+        navigate(`/app/songs/${gana.id}`)
     };
 
     return (

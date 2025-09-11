@@ -13,7 +13,6 @@ const Adventure = () => {
             .then((data) => {
                 const slicedSongs = data.slice(18, 21);
                 setAdventureSongs(slicedSongs);
-                setPlayerSongs(slicedSongs);
             })
             .catch((err) => console.error('Fetch error from Adventure component:', err));
     }, []);
@@ -23,7 +22,8 @@ const Adventure = () => {
         setPlayerSongs(AdventureSongs);
         setCurrentSong(gana);
         setCurrentIndex(index);
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        // setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+        navigate(`/app/songs/${gana.id}`)
     };
 
     return (

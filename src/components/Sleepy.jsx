@@ -13,7 +13,6 @@ const Sleepy = () => {
             .then((data) => {
                 const slicedSongs = data.slice(21, 24);
                 setSleepySongs(slicedSongs);
-                setPlayerSongs(slicedSongs);
             })
             .catch((err) => console.error('Fetch error from Sleepy component:', err));
     }, []);
@@ -23,7 +22,8 @@ const Sleepy = () => {
         setPlayerSongs(SleepySongs);
         setCurrentSong(gana);
         setCurrentIndex(index);
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        // setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+        navigate(`/app/songs/${gana.id}`)
     };
 
     return (

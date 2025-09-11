@@ -12,8 +12,7 @@ const Albums = () => {
             .then((res) => res.json())
             .then((data) => {
                 const slicedSongs = data.slice(0, 3);
-                setAlbumSongs(slicedSongs);
-                setPlayerSongs(slicedSongs); 
+                setAlbumSongs(slicedSongs); 
             })
             .catch((err) => console.error('Fetch error from album component:', err));
     }, []);
@@ -22,7 +21,7 @@ const Albums = () => {
         setPlayerSongs(albumSongs);       // 👈 Set the current list
         setCurrentSong(gana);
         setCurrentIndex(index);
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        navigate(`/app/songs/${gana.id}`)
     };
 
     return (

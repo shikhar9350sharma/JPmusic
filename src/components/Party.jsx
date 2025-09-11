@@ -13,7 +13,7 @@ const Party = () => {
             .then((data) => {
                 const slicedSongs = data.slice(55, 58);
                 setPartySongs(slicedSongs);
-                setPlayerSongs(slicedSongs);
+               
             })
             .catch((err) => console.error('Fetch error from Party component:', err));
     }, []);
@@ -23,7 +23,8 @@ const Party = () => {
         setPlayerSongs(PartySongs);
         setCurrentSong(gana);
         setCurrentIndex(index);
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        // setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+        navigate(`/app/songs/${gana.id}`)
     };
 
     return (

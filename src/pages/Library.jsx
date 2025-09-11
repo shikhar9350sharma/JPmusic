@@ -13,7 +13,7 @@ const Library = () => {
   }, [])
 
   const handleLibraryClick = (album)=>{
-    navigate(`/librarypage/${album.id}`);
+    navigate(`/app/librarypage/${album.id}`);
   }
   return (
     

@@ -7,7 +7,7 @@ const SongCards = ({ song }) => {
     const navigate = useNavigate();
     const handlePlay = () => {
         setCurrentSong(song);
-        navigate(`/songs/${song.id}`);
+        navigate(`/app/songs/${song.id}`);
     };
 
     return (

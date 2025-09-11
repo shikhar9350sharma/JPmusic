@@ -11,7 +11,7 @@ const Artist = () => {
             .then((data) => setArtists(data));
     }, [])
     const handleArtistClick =(artist)=>{
-        navigate(`/artists/${artist.id}`)
+        navigate(`/app/artists/${artist.id}`)
     }
     return (
         <div>

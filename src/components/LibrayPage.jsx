@@ -27,7 +27,7 @@ const LibrayPage = () => {
     setPlayerSongs(AlbumSongs);
     setCurrentSong(gana);
     setCurrentIndex(index); // 🔥 This enables next/previous navigation
-    setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+    setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
   };
 
   if (!AlbumSongs) {

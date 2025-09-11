@@ -32,7 +32,8 @@ const ListenAgain = () => {
         setPlayerSongs(featureSongs);       // 👈 Set the current list
         setCurrentSong(gana);
         setCurrentIndex(index);
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        // setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+        navigate(`/app/songs/${gana.id}`)
     };
     return (
         <div>

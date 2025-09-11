@@ -25,7 +25,7 @@ const ListenAgain = () => {
         setPlayerSongs(listenAgainSongs);
         setCurrentSong(gana);
         setCurrentIndex(index); // 🔥 This enables next/previous navigation
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
     };
 
 

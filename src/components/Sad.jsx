@@ -13,7 +13,6 @@ const Sad = () => {
             .then((data) => {
                 const slicedSongs = data.slice(7, 10);
                 setSadSongs(slicedSongs);
-                setPlayerSongs(slicedSongs);
             })
             .catch((err) => console.error('Fetch error from Sad component:', err));
     }, []);
@@ -23,7 +22,8 @@ const Sad = () => {
         setPlayerSongs(SadSongs);
         setCurrentSong(gana);
         setCurrentIndex(index);
-        setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+        // setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+        navigate(`/app/songs/${gana.id}`)
     };
 
     return (

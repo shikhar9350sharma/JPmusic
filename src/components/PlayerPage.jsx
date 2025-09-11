@@ -1,14 +1,46 @@
 import { useSong } from '../context/SongContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import SongTile from './SongTile';
+import { useParams } from 'react-router-dom';
 
 const PlayerPage = () => {
-    const { currentSong, setCurrentSong, playerSongs, setCurrentIndex, currentIndex, likedSongs, toggleLike} = useSong();
+    const { currentSong, setCurrentSong, playerSongs, setPlayerSongs, setCurrentIndex, currentIndex, likedSongs, toggleLike } = useSong();
     const [activeTab, setActiveTab] = useState('up next')
-    
-    const onselect = (song) => {
-        setCurrentSong(song);
-    };
+
+    const { id } = useParams();
+
+    useEffect(() => {
+        if (!currentSong && id) {
+            fetch(`https://music-api-gamma.vercel.app/songs`)
+                .then(res => res.json())
+                .then(data => {
+                    const song = data.find(s => s.id === id);
+                    if (song) {
+                        setCurrentSong(song);
+                        const related = data.filter(s => s.artistID === song.artistID);
+                        setPlayerSongs(related);
+                        const index = related.findIndex(s => s.id === song.id);
+                        if (index !== -1) setCurrentIndex(index);
+                    }
+                })
+                .catch(err => console.error('Failed to fetch song by ID:', err));
+        }
+    }, [id, currentSong]);
+
+    useEffect(() => {
+        if (!playerSongs.length && currentSong?.artistID) {
+            fetch('https://music-api-gamma.vercel.app/songs')
+                .then(res => res.json())
+                .then(data => {
+                    const related = data.filter(song => song.artistID === currentSong.artistID);
+                    setPlayerSongs(related);
+                    const index = related.findIndex(s => s.id === currentSong.id);
+                    if (index !== -1) setCurrentIndex(index);
+                })
+                .catch(err => console.error('Failed to fetch fallback songs:', err));
+        }
+    }, [playerSongs.length, currentSong]);
+
 
     return (
         // h-[calc(100vh-90px)]
@@ -17,7 +49,7 @@ const PlayerPage = () => {
                 <div className="flex flex-col lg:flex-row w-full h-full rounded-xl bg-[#1b1b1b]">
                     {/* Left Panel */}
                     <div className="lg:w-1/2 p-2 flex flex-col justify-evenly md:justify-center items-center border-transparent border-r md:border-[#464646]">
-                        <div className=" w-[300px] border border-[#616161] md:w-[350px] rounded-xl bg-[#1b1b1b] p-2 gap-4 flex flex-col"> 
+                        <div className=" w-[300px] border border-[#616161] md:w-[350px] rounded-xl bg-[#1b1b1b] p-2 gap-4 flex flex-col">
                             {/* Song Cover */}
                             <div className="w-full aspect-square rounded-xl relative overflow-hidden">
                                 <img className="w-full h-full object-cover rounded-xl" src={currentSong.cover} alt={currentSong.title} />
@@ -32,7 +64,7 @@ const PlayerPage = () => {
                                             <span className="text-sm">{currentSong.likes} likes</span>
                                         </div>
                                         <div className="flex justify-end ">
-                                            <span className="text-sm">🎧{currentSong.monthlyListeners} <br/> monthly listeners</span>
+                                            <span className="text-sm">🎧{currentSong.monthlyListeners} <br /> monthly listeners</span>
                                         </div>
                                     </div>
                                 </div>
@@ -65,7 +97,7 @@ const PlayerPage = () => {
                                 <div className='mt-2 '>
                                     {activeTab === 'lyrics🎶' && (
                                         <div>
-                                            <div  className='flex flex-col w-full sm:w-80 px-3 py-2'>
+                                            <div className='flex flex-col w-full sm:w-80 px-3 py-2'>
                                                 <div className='text-xl font-sans font-semibold text-gray-200'><span>{currentSong.lyrics}</span></div>
                                             </div>
                                         </div>
@@ -86,7 +118,6 @@ const PlayerPage = () => {
                                                     key={song.id}
                                                     song={song}
                                                     isActive={i === currentIndex}
-                                                    onSelect={() => onselect(song)}
                                                     isLiked={likedSongs[song.id] ?? false}
                                                     onLike={() => toggleLike(song.id)}
                                                     onClick={() => {

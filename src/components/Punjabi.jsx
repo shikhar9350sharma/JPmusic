@@ -21,7 +21,6 @@ const Punjabi = () => {
       .then((data) => {
         const slicedSongs = data.slice(0, 7);
         setPunjabiSongs(slicedSongs);
-        setPlayerSongs(slicedSongs);
       })
       .catch((err) => console.error('Fetch error from album component:', err));
   }, []);
@@ -31,7 +30,8 @@ const Punjabi = () => {
     setPlayerSongs(punjabiSongs);       // 👈 Set the current list
     setCurrentSong(gana);
     setCurrentIndex(index);
-    setTimeout(() => navigate(`/songs/${gana.id}`), 50);
+    // setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+    navigate(`/app/songs/${gana.id}`)
   }
   return (
     <div className="flex flex-col gap-4 py-2 px-4">

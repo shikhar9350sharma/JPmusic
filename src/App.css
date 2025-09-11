@@ -5,6 +5,11 @@ body{
     color: white;
     font-family: 'Poppins', 'sans-serif';
 }
+/* body{
+    background-color: rgb(29, 29, 29);
+    color: gray;
+    font-family: 'Poppins', 'sans-serif';
+} */
 *{
   margin: 0;
   padding: 0;
