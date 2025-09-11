@@ -33,9 +33,6 @@ function App() {
               <Layout />
             </ProtectedRoute>
           }
-        // <Route
-        //   path='/app'
-        //   element={<Layout />}
         > 
           <Route index element={<HomePage />} />
           <Route path='explore' element={<Explore />} />
