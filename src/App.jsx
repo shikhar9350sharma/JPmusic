@@ -14,14 +14,14 @@ import ArtistDetails from './components/ArtistDetails'
 import SearchPage from './components/SearchPage'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
-import ScrollToTop from './components/ScrolltoTop'
 import ProtectedRoute from './components/ProtectedRoute'
+import ScrolltoTop from './components/ScrolltoTop'
 
 function App() {
 
   return (
     <Router>
-      <ScrollToTop />
+      <ScrolltoTop/>
       <Routes>
         <Route path='/' element={<Navigate to='/login' replace />} />
         <Route path='/login' element={<Login />} />
