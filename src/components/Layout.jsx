@@ -29,7 +29,7 @@ const Layout = () => {
                 </div>
                 <div className='flex flex-col md:flex-row  h-screen' >
                     {/* this is the side bar */}
-                    <div className={` flex flex-col bg-[#121212] md:bg-black border-t-0 md:border-t-0 md:border-r border-[#464646]  ${isSidebarOpen ? 'w-20 h-16 md:h-full md:w-80' : 'h-16 md:h-full md:w-16'}  fixed bottom-0 left-0 w-full md:static z-50 `}>
+                    <div className={` flex flex-col bg-[#121212] md:bg-black  border-t-0 md:border-t-0 md:border-r border-[#464646]  ${isSidebarOpen ? 'w-20 h-16 md:h-full md:w-80' : 'h-16 md:h-full md:w-16'}  fixed bottom-0 left-0 w-full md:static z-50 `}>
                         <div className=''>
                             <nav>
                                 <ul className=' p-2 flex justify-around md:flex-col md:justify-normal gap-4'>
