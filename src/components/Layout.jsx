@@ -12,7 +12,7 @@ const Layout = () => {
     return (
         <>
             <div className='flex flex-col itmes-center w-full h-screen'>
-                <div className=' flex border-b border-[#464646]  h-full md:h-16'>
+                <div className=' flex border-b-0 md:border-b border-[#464646]  h-full md:h-16'>
                     <div className={`h-16 flex  ml-2 md:ml-0 items-center gap-4 ${isSidebarOpen ? 'w-20 md:w-80' : 'w-20 md:w-44'}`}>
                         {/* hamburger  */}
                         <div className='hidden  ml-2 rounded-full md:flex items-center p-1.5 bg-[#2b2b2b] hover:bg-[#464646]'>
@@ -29,7 +29,7 @@ const Layout = () => {
                 </div>
                 <div className='flex flex-col md:flex-row  h-screen' >
                     {/* this is the side bar */}
-                    <div className={` flex flex-col  bg-black border-t md:border-t-0 md:border-r border-[#464646]  ${isSidebarOpen ? 'w-20 h-16 md:h-full md:w-80' : 'h-16 md:h-full md:w-16'}  fixed bottom-0 left-0 w-full md:static z-50 `}>
+                    <div className={` flex flex-col bg-[#121212] md:bg-black border-t-0 md:border-t-0 md:border-r border-[#464646]  ${isSidebarOpen ? 'w-20 h-16 md:h-full md:w-80' : 'h-16 md:h-full md:w-16'}  fixed bottom-0 left-0 w-full md:static z-50 `}>
                         <div className=''>
                             <nav>
                                 <ul className=' p-2 flex justify-around md:flex-col md:justify-normal gap-4'>

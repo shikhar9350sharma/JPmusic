@@ -15,17 +15,28 @@ import SearchPage from './components/SearchPage'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import ScrollToTop from './components/ScrolltoTop'
+import ProtectedRoute from './components/ProtectedRoute'
 
 function App() {
 
   return (
     <Router>
-      <ScrollToTop/>
+      <ScrollToTop />
       <Routes>
         <Route path='/' element={<Navigate to='/login' replace />} />
         <Route path='/login' element={<Login />} />
         <Route path='/signup' element={<SignUp />} />
-        <Route path='/app' element={<Layout />}>
+        <Route
+          path='/app'
+          element={
+            <ProtectedRoute>
+              <Layout />
+            </ProtectedRoute>
+          }
+        // <Route
+        //   path='/app'
+        //   element={<Layout />}
+        > 
           <Route index element={<HomePage />} />
           <Route path='explore' element={<Explore />} />
           <Route path='upgrade' element={<Upgrade />} />

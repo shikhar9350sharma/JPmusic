@@ -8,7 +8,7 @@ import ExploreAll from '../components/ExploreAll'
 const Explore = () => {
   return (
     <div>
-      <div className=' h-full py-10 flex flex-col mb-10 '>
+      <div className=' h-full  flex flex-col mb-28 '>
         <NewRlease/>
         <Artist />
         <ExploreAll />

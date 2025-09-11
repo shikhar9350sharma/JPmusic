@@ -153,7 +153,7 @@ const MiniPlayer = () => {
     if (!currentSong) return null;
 
     return (
-        <div className="fixed md:bottom-0 bottom-16 z-50 w-full h-14 md:h-20 border-t border-gray-700 bg-[#121212] px-2  flex justify-between md:grid md:grid-cols-3 items-center gap-2 ">
+        <div className="fixed md:bottom-0 bottom-16 z-50 w-full h-14 md:h-20  bg-[#121212] px-2  flex justify-between md:grid md:grid-cols-3 items-center gap-2 ">
             {/* Left: Song Info */}
             <div className=" hidden md:flex items-center gap-2 w-[280px] md:w-full overflow-hidden">
                 <img src={currentSong.cover} alt="cover" className="w-10 h-10 sm:w-12 sm:h-12 rounded-md object-cover" />

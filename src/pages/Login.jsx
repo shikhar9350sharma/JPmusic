@@ -28,17 +28,18 @@ const Login = () => {
             const res = await fetch('https://music-api-gamma.vercel.app/login', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
+                body: JSON.stringify(formData),
+                credentials: 'include' // 🔑 This sends and stores cookies
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                toast(data.error || "Login failed");
+                toast(data.message || "Login failed");
+                console.log('login faild', data)
                 setLoading(false);
                 return;
             }
-
             toast("Logged in successfully");
             setFormData({ username: '', password: '' });
             navigate('/app');
@@ -117,12 +118,29 @@ const Login = () => {
                             />
                             <button className='absolute top-1 right-5 text-gray-300' onClick={togglePass}>{showPass ? "hide" : "show"}</button>
                         </div>
-                        <button
+                        {/* <button
                             disabled={loading}
                             type='submit'
                             className="w-full py-2 bg-gray-950 hover:bg-gray-900 rounded-lg text-white font-semibold transition duration-300"
                         >
                             Log in
+                        </button> */}
+                        <button
+                            disabled={loading}
+                            type='submit'
+                            className="w-full py-2 bg-gray-950 hover:bg-gray-900 rounded-lg text-white font-semibold transition duration-300 flex items-center justify-center gap-2"
+                        >
+                            {loading ? (
+                                <>
+                                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4" fill="none" />
+                                        <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                    </svg>
+                                    Logging in...
+                                </>
+                            ) : (
+                                "Log in"
+                            )}
                         </button>
                         <div className='flex items-center'>
                             <span className='border border-gray-500 h-[2px] w-1/2'></span>

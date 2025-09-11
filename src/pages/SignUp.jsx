@@ -5,7 +5,7 @@ import { ToastContainer, toast } from 'react-toastify';
 
 
 const SignUp = () => {
-    const [formData, setFormData] = useState({ email: '', username: '', password: '', fullname: '', });
+    const [formData, setFormData] = useState({ email: '', username: '', password: '', fullName: '', });
     const [showPass, setShowPass] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -20,7 +20,7 @@ const SignUp = () => {
     };
     const handleSubmit = async (e) => {
         e.preventDefault();
-        if (!formData.email || !formData.username || !formData.password || !formData.fullname) {
+        if (!formData.email || !formData.username || !formData.password || !formData.fullName) {
             toast("Invalid Creadentials");
             return;
         }
@@ -29,20 +29,21 @@ const SignUp = () => {
             const res = await fetch('https://music-api-gamma.vercel.app/signup', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(formData)
-                // credentials: 'include' // 🔑 This sends and stores cookies
+                body: JSON.stringify(formData),
+                credentials: 'include' // 🔑 This sends and stores cookies
             });
 
             const data = await res.json();
 
             if (!res.ok) {
-                toast(data.error || "Signup failed");
+                toast(data.message || "Signup failed");
+                // console.log('Signup response:', data);
                 setLoading(false);
                 return;
             }
 
             toast("Account created successfully");
-            setFormData({ email: '', username: '', password: '', fullname: '' });
+            setFormData({ email: '', username: '', password: '', fullName: '' });
             navigate('/app');
         } catch (err) {
             toast("Something went wrong");
@@ -95,9 +96,9 @@ const SignUp = () => {
                             {/* <label htmlFor='fname' className="block text-sm font-medium mb-2" >Full Name</label> */}
                             <input
                                 type="text"
-                                id='fullname'
-                                name="fullname"
-                                value={formData.fullname}
+                                id='fullName'
+                                name="fullName"
+                                value={formData.fullName}
                                 onChange={handleChange}
                                 placeholder='Full Name'
                                 className='px-2 py-1 rounded-lg bg-white/10 w-full focus:outline-none focus:ring-2 focus:ring-white'
@@ -129,12 +130,29 @@ const SignUp = () => {
                             />
                             <button className='absolute top-1 right-5 text-gray-300' onClick={togglePass}>{showPass ? "hide" : "show"}</button>
                         </div>
-                        <button
+                        {/* <button
                             disabled={loading}
                             type='submit'
                             className="w-full py-2 bg-gray-950 hover:bg-gray-900 rounded-lg text-white font-semibold transition duration-300"
                         >
                             Sign up
+                        </button> */}
+                        <button
+                            disabled={loading}
+                            type='submit'
+                            className="w-full py-2 bg-gray-950 hover:bg-gray-900 rounded-lg text-white font-semibold transition duration-300 flex items-center justify-center gap-2"
+                        >
+                            {loading ? (
+                                <>
+                                    <svg className="animate-spin h-5 w-5 text-white" viewBox="0 0 24 24">
+                                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="white" strokeWidth="4" fill="none" />
+                                        <path className="opacity-75" fill="white" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z" />
+                                    </svg>
+                                    Signing up...
+                                </>
+                            ) : (
+                                "Sign up"
+                            )}
                         </button>
                         <div className='flex items-center'>
                             <span className='border border-gray-500 h-[2px] w-1/2'></span>
