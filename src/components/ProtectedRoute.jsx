@@ -11,12 +11,13 @@ const ProtectedRoute = ({ children }) => {
     })
       .then(res => res.json())
       .then(data => {
-        if (data.authenticated) {
+        if (data && data._id) {
           setIsAuthenticated(true);
         } else {
           setIsAuthenticated(false);
         }
       })
+
       .catch(() => setIsAuthenticated(false));
   }, []);
 
