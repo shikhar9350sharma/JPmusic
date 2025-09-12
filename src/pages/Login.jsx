@@ -20,7 +20,7 @@ const Login = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.username || !formData.password) {
-            toast("Invalid Creadentials");
+            toast("Invalid Credentials");
             return;
         }
         setLoading(true);
@@ -36,7 +36,7 @@ const Login = () => {
 
             if (!res.ok) {
                 toast(data.message || "Login failed");
-                console.log('login faild', data)
+                console.log('login failed', data)
                 setLoading(false);
                 return;
             }
@@ -49,18 +49,6 @@ const Login = () => {
         } finally {
             setLoading(false);
         }
-        // const res = await fetch('https://music-api-gamma.vercel.app/login', {
-        //     method: 'POST',
-        //     headers: { 'Content-Type': 'application/json' },
-        //     body: JSON.stringify(formData)
-        // });
-        // setLoading(true)
-        // setTimeout(() => {
-        //     setLoading(false);
-        //     toast("Loggin Successfully")
-        //     setFormData({ username: '', password: '' });
-        //     navigate('/app');
-        // }, 5000);
 
     };
 
@@ -110,7 +98,7 @@ const Login = () => {
                                 type={showPass ? 'text' : 'password'}
                                 name="password"
                                 id='password'
-                                autoComplete='password'
+                                autoComplete='current-password'
                                 value={formData.password}
                                 onChange={handleChange}
                                 placeholder='Password'

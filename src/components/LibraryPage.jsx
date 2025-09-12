@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { useParams } from 'react-router-dom';
 
 
-const LibrayPage = () => {
+const LibraryPage = () => {
     const { id } = useParams();
   const [AlbumSongs, setAlbumSongs] = useState([]);
   const { setCurrentIndex, setCurrentSong, setPlayerSongs } = useSong();
@@ -55,4 +55,4 @@ const LibrayPage = () => {
   )
 }
 
-export default LibrayPage
+export default LibraryPage

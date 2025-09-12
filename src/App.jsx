@@ -9,7 +9,7 @@ import Explore from './pages/Explore'
 import Upgrade from './pages/Upgrade'
 import Library from './pages/Library'
 import PlayerPage from './components/PlayerPage'
-import LibrayPage from './components/LibrayPage'
+import LibraryPage from './components/LibraryPage'
 import ArtistDetails from './components/ArtistDetails'
 import SearchPage from './components/SearchPage'
 import Login from './pages/Login'
@@ -40,7 +40,7 @@ function App() {
           <Route path='library' element={<Library />} />
           <Route path='songs/:id' element={<PlayerPage />} />
           <Route path='artists/:id' element={<ArtistDetails />} />
-          <Route path='librarypage/:id' element={<LibrayPage />} />
+          <Route path='librarypage/:id' element={<LibraryPage />} />
           <Route path='search' element={<SearchPage />} />
         </Route>
       </Routes>

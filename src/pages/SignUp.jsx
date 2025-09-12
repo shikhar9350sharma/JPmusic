@@ -21,7 +21,7 @@ const SignUp = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!formData.email || !formData.username || !formData.password || !formData.fullName) {
-            toast("Invalid Creadentials");
+            toast("Invalid Credentials");
             return;
         }
         setLoading(true);
