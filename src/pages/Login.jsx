@@ -75,7 +75,7 @@ const Login = () => {
                     </div>
                 </div>
                 <form onSubmit={handleSubmit}>
-                    <div className='border border-transparent md:border-gray-300 gap-4 flex flex-col text-left px-6 py-8 w-72  md:w-96 rounded-xl'>
+                    <div className='border border-gray-300 gap-4 flex flex-col text-left px-6 py-8 w-72  md:w-96 rounded-xl'>
                         <div className='flex items-center justify-center gap-2 mb-6'>
                             <img loading='lazy' className='h-8 md:h-12 ' src="app.svg" alt="img" />
                         </div>
