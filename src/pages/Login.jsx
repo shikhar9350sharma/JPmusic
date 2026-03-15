@@ -66,7 +66,7 @@ const Login = () => {
                 pauseOnHover
                 theme="dark"
             />
-            <div className='py-10 min-h-screen flex flex-col md:flex-row  items-center justify-normal md:justify-evenly '>
+            <div className='py-10 min-h-screen flex flex-col md:flex-row  items-center justify-center md:justify-evenly '>
                 <div className='flex flex-col items-center justify-center gap-2'>
                     <div className='hidden md:flex items-center gap-2'>
                         <div className='w-80 h-80'>
@@ -74,6 +74,7 @@ const Login = () => {
                         </div>
                     </div>
                 </div>
+                {/* login form  */}
                 <form onSubmit={handleSubmit}>
                     <div className='border border-gray-300 gap-4 flex flex-col text-left px-6 py-8 w-72  md:w-96 rounded-xl'>
                         <div className='flex items-center justify-center gap-2 mb-6'>

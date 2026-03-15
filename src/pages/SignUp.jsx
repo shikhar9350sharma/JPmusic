@@ -70,7 +70,7 @@ const SignUp = () => {
                 <div className='relative flex items-center justify-center'>
                     
                     {/* Ukulele Image: Anchored relative to the bottom-left of the form wrapper */}
-                    <div className=' z-50 absolute -left-[70px] -bottom-[5px] lg:-left-[195px] lg:-bottom-[30px] transform -rotate-[29deg]'>
+                    <div className=' z-50 absolute -left-[65px] -bottom-[5px] lg:-left-[195px] lg:-bottom-[30px] transform -rotate-[29deg]'>
                         <div className='w-40 h-40 lg:w-80 lg:h-80 drop-shadow-2xl'>
                             <img loading='lazy' className='h-full w-full object-contain' src="ukulele.png" alt="Ukulele" />
                         </div>
