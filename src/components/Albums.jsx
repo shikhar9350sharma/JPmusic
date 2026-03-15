@@ -11,7 +11,7 @@ const Albums = () => {
         fetch('https://music-api-gamma.vercel.app/songs')
             .then((res) => res.json())
             .then((data) => {
-                const slicedSongs = data.slice(0, 3);
+                const slicedSongs = data.slice(90, 93);
                 setAlbumSongs(slicedSongs); 
             })
             .catch((err) => console.error('Fetch error from album component:', err));

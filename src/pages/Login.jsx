@@ -107,13 +107,6 @@ const Login = () => {
                             />
                             <button className='absolute top-1 right-5 text-gray-300' onClick={togglePass}>{showPass ? "hide" : "show"}</button>
                         </div>
-                        {/* <button
-                            disabled={loading}
-                            type='submit'
-                            className="w-full py-2 bg-gray-950 hover:bg-gray-900 rounded-lg text-white font-semibold transition duration-300"
-                        >
-                            Log in
-                        </button> */}
                         <button
                             disabled={loading}
                             type='submit'
