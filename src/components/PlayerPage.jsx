@@ -4,7 +4,7 @@ import SongTile from './SongTile';
 import { useParams } from 'react-router-dom';
 
 const PlayerPage = () => {
-    const { currentSong, setCurrentSong, playerSongs, setPlayerSongs, setCurrentIndex, currentIndex, likedSongs, toggleLike } = useSong();
+    const { currentSong, setCurrentSong, playerSongs, setPlayerSongs, setCurrentIndex, currentIndex, likedSongs, toggleLike, setIsPlaying } = useSong();
     const [activeTab, setActiveTab] = useState('up next')
 
     const { id } = useParams();
@@ -120,9 +120,10 @@ const PlayerPage = () => {
                                                     isActive={i === currentIndex}
                                                     isLiked={likedSongs[song.id] ?? false}
                                                     onLike={() => toggleLike(song.id)}
-                                                    onClick={() => {
+                                                    onSelect={() => {
                                                         setCurrentSong(song);
                                                         setCurrentIndex(i);
+                                                        setIsPlaying(true);
                                                     }}
                                                 />
                                             ))}

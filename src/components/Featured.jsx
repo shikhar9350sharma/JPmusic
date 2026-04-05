@@ -11,19 +11,13 @@ const ListenAgain = () => {
     const { setCurrentIndex, setCurrentSong, setPlayerSongs } = useSong();
     const { scrollRef, scrollLeft, scrollRight } = useScrollControls();
 
-    // useEffect(() => {
-    //     fetch('http://localhost:3001/songs')
-    //         .then((res) => res.json())
-    //         .then((data) => setFeatureSongs((data.slice(10, 20))))
-    //         .catch((err)=> console.log('Error found in the Fetured Playlist', err));
-    // }, [])
     useEffect(() => {
         fetch('https://music-api-gamma.vercel.app/songs')
             .then((res) => res.json())
             .then((data) => {
                 const slicedSongs = data.slice(55, 63);
                 setFeatureSongs(slicedSongs);
-                setPlayerSongs(slicedSongs);
+                // setPlayerSongs(slicedSongs);
             })
             .catch((err) => console.error('Fetch error from album component:', err));
     }, []);
