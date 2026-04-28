@@ -1,52 +1,99 @@
-import React from 'react'
-const SongTile = ({ song, isLiked, onLike, onSelect}) => {
-   
+import { Heart, Play, Clock, Music2, MoreVertical } from 'lucide-react';
+
+const SongTile = ({ song, isActive, isLiked, onLike, onSelect }) => {
   return (
-    <>
-      
-      <div
-        className="flex items-center justify-between  p-3 hover:bg-gray-800 transition-colors rounded-lg cursor-pointer"
-        onClick={onSelect}
-      >
-        {/* Left: Thumbnail & Info */}
-        <div className="flex items-center sm:flex-row sm:justify-between sm:items-center space-x-4">
+    <div
+      className={`
+        group flex items-center justify-between p-3 rounded-xl transition-all duration-200 cursor-pointer
+        ${isActive 
+          ? 'bg-emerald-500/10 border border-emerald-500/20' 
+          : 'hover:bg-[#2b2b2b] border border-transparent'
+        }
+      `}
+      onClick={onSelect}
+    >
+      {/* Left: Thumbnail & Info */}
+      <div className="flex items-center gap-3 md:gap-4 flex-1 min-w-0">
+        {/* Cover with Play Overlay */}
+        <div className="relative flex-shrink-0">
           <img
             src={song.cover}
             alt={song.title}
-            className="w-12 h-12 rounded-md object-cover"
+            className={`
+              w-11 h-11 md:w-12 md:h-12 rounded-lg object-cover transition-opacity
+              ${isActive ? 'opacity-100' : 'group-hover:opacity-75'}
+            `}
           />
-          <div>
-            <h3 className="text-xs md:text-sm font-semibold text-white">{song.title}</h3>
-            <p className="text-[10px] md:text-xs text-gray-400">{song.artist}</p>
+          {/* Active/Play Indicator */}
+          <div className={`
+            absolute inset-0 flex items-center justify-center rounded-lg
+            ${isActive ? 'bg-emerald-500/20' : 'bg-black/40 opacity-0 group-hover:opacity-100'}
+            transition-opacity
+          `}>
+            {isActive ? (
+              <div className="flex items-end gap-0.5 h-4">
+                <div className="w-0.5 bg-emerald-400 rounded-full animate-[bounce_1s_infinite]" style={{ height: '60%' }} />
+                <div className="w-0.5 bg-emerald-400 rounded-full animate-[bounce_1.2s_infinite]" style={{ height: '100%' }} />
+                <div className="w-0.5 bg-emerald-400 rounded-full animate-[bounce_0.8s_infinite]" style={{ height: '40%' }} />
+              </div>
+            ) : (
+              <Play className="w-5 h-5 text-white fill-white" />
+            )}
           </div>
         </div>
 
-        {/* Right: Duration & Like */}
-        <div className="flex items-center space-x-4">
-          <span className="text-[10px] md:text-xs text-gray-300">{song.duration}</span>
-          <button
-            className="text-pink-500 hover:text-pink-600 focus:outline-none"
-            onClick={(e) => {
-              e.stopPropagation(); // Prevent triggering onSelect
-              onLike();
-            }}
-          >
-            {isLiked ? (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 fill-current" viewBox="0 0 20 20">
-                <path d="M3.172 5.172a4.004 4.004 0 015.656 0L10 6.343l1.172-1.171a4.004 4.004 0 115.656 5.656L10 17.657l-6.828-6.829a4.004 4.004 0 010-5.656z" />
-              </svg>
-            ) : (
-              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                <path d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 20.364 4.318 12.682a4.5 4.5 0 010-6.364z" />
-              </svg>
-            )}
-          </button>
+        {/* Song Info */}
+        <div className="min-w-0 flex-1">
+          <h3 className={`
+            text-sm font-semibold truncate transition-colors
+            ${isActive ? 'text-emerald-400' : 'text-white group-hover:text-emerald-400'}
+          `}>
+            {song.title}
+          </h3>
+          <div className="flex items-center gap-1">
+            <Music2 className="w-3 h-3 text-gray-500 flex-shrink-0" />
+            <p className="text-xs text-gray-400 truncate">{song.artist}</p>
+          </div>
         </div>
       </div>
-    </>
+
+      {/* Right: Duration & Like */}
+      <div className="flex items-center gap-3 md:gap-4 flex-shrink-0 ml-2">
+        {/* Duration */}
+        <div className="hidden sm:flex items-center gap-1 text-gray-500">
+          <Clock className="w-3 h-3" />
+          <span className="text-xs">{song.duration || '3:45'}</span>
+        </div>
+
+        {/* Like Button */}
+        <button
+          className={`
+            p-1.5 rounded-full transition-all duration-200
+            ${isLiked 
+              ? 'text-emerald-500 hover:text-emerald-400' 
+              : 'text-gray-500 hover:text-white opacity-0 group-hover:opacity-100'
+            }
+          `}
+          onClick={(e) => {
+            e.stopPropagation();
+            onLike();
+          }}
+        >
+          <Heart 
+            className={`w-4 h-4 md:w-5 md:h-5 ${isLiked ? 'fill-current' : ''}`} 
+          />
+        </button>
+
+        {/* More Options (visible on hover) */}
+        <button 
+          className="text-gray-500 hover:text-white opacity-0 group-hover:opacity-100 transition-opacity p-1"
+          onClick={(e) => e.stopPropagation()}
+        >
+          <MoreVertical className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
   );
 };
+
 export default SongTile;
-
-
-

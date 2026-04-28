@@ -7,7 +7,6 @@ import Layout from './components/Layout'
 import HomePage from './components/HomePage'
 import Explore from './pages/Explore'
 import Upgrade from './pages/Upgrade'
-import Library from './pages/Library'
 import PlayerPage from './components/PlayerPage'
 import LibraryPage from './components/LibraryPage'
 import ArtistDetails from './components/ArtistDetails'
@@ -16,6 +15,7 @@ import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import ProtectedRoute from './components/ProtectedRoute'
 import ScrolltoTop from './components/ScrolltoTop'
+import MyLibrary from './pages/MyLibrary'
 
 function App() {
 
@@ -37,7 +37,7 @@ function App() {
           <Route index element={<HomePage />} />
           <Route path='explore' element={<Explore />} />
           <Route path='upgrade' element={<Upgrade />} />
-          <Route path='library' element={<Library />} />
+          <Route path='library' element={<MyLibrary />} />
           <Route path='songs/:id' element={<PlayerPage />} />
           <Route path='artists/:id' element={<ArtistDetails />} />
           <Route path='librarypage/:id' element={<LibraryPage />} />
