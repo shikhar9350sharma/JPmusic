@@ -15,7 +15,6 @@ const Explore = () => {
         <English />
         <Punjabi />
       </div>
-        
     </div>
   )
 }
