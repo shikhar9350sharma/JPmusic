@@ -17,7 +17,7 @@ const LibraryPage = () => {
   const navigate = useNavigate();
   const [albumSongs, setAlbumSongs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { setCurrentIndex, setCurrentSong, setPlayerSongs, setIsPlaying } = useSong();
+  const { playSong } = useSong();
 
   useEffect(() => {
     if (id) {
@@ -26,7 +26,6 @@ const LibraryPage = () => {
         .then((res) => res.json())
         .then((data) => {
           setAlbumSongs(data);
-          setPlayerSongs(data);
           setIsLoading(false);
         })
         .catch((err) => {
@@ -38,19 +37,13 @@ const LibraryPage = () => {
 
   const handleAlbumClick = (gana) => {
     const index = albumSongs.findIndex((s) => s.id === gana.id);
-    setPlayerSongs(albumSongs);
-    setCurrentSong(gana);
-    setCurrentIndex(index);
-    setIsPlaying(true);
+    playSong(gana, albumSongs, index);
     navigate(`/app/songs/${gana.id}`);
   };
 
   const handlePlayAll = () => {
     if (albumSongs.length > 0) {
-      setPlayerSongs(albumSongs);
-      setCurrentSong(albumSongs[0]);
-      setCurrentIndex(0);
-      setIsPlaying(true);
+      playSong(albumSongs[0], albumSongs, 0);
       navigate(`/app/songs/${albumSongs[0].id}`);
     }
   };
@@ -84,12 +77,10 @@ const LibraryPage = () => {
     );
   }
 
-  // Get album info from first song
   const albumInfo = albumSongs[0];
 
   return (
     <div className="p-4 md:p-6 pb-32">
-      {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4 md:hidden"
@@ -98,9 +89,7 @@ const LibraryPage = () => {
         Back
       </button>
 
-      {/* Album Header */}
       <div className="flex flex-col sm:flex-row items-start sm:items-end gap-4 md:gap-6 mb-8">
-        {/* Album Cover */}
         <div className="w-full sm:w-48 md:w-56 flex-shrink-0">
           <div className="relative aspect-square rounded-xl overflow-hidden shadow-2xl group">
             <img
@@ -108,7 +97,6 @@ const LibraryPage = () => {
               alt={albumInfo.album || 'Album'}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
-            {/* Play Overlay */}
             <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
               <button
                 onClick={handlePlayAll}
@@ -120,7 +108,6 @@ const LibraryPage = () => {
           </div>
         </div>
 
-        {/* Album Info */}
         <div className="flex-1 space-y-2">
           <span className="inline-flex items-center gap-1.5 px-2 py-0.5 bg-emerald-500/20 text-emerald-400 text-xs font-medium rounded-full">
             <Disc3 className="w-3 h-3" />
@@ -144,7 +131,6 @@ const LibraryPage = () => {
           </div>
           <p className="text-sm text-gray-500">{albumInfo.artist}</p>
 
-          {/* Action Buttons */}
           <div className="flex items-center gap-3 pt-3">
             <button
               onClick={handlePlayAll}
@@ -160,7 +146,6 @@ const LibraryPage = () => {
         </div>
       </div>
 
-      {/* Songs List */}
       <div className="space-y-1">
         {albumSongs.map((gana, index) => (
           <div
@@ -168,7 +153,6 @@ const LibraryPage = () => {
             onClick={() => handleAlbumClick(gana)}
             className="group flex items-center gap-3 p-3 rounded-xl hover:bg-[#2b2b2b] transition-colors cursor-pointer"
           >
-            {/* Track Number / Play Icon */}
             <div className="w-8 flex items-center justify-center flex-shrink-0">
               <span className="text-sm text-gray-500 group-hover:hidden">
                 {index + 1}
@@ -176,14 +160,12 @@ const LibraryPage = () => {
               <Play className="w-4 h-4 text-white hidden group-hover:block fill-white" />
             </div>
 
-            {/* Song Cover */}
             <img
               src={gana.cover}
               alt={gana.title}
               className="w-12 h-12 rounded-lg object-cover flex-shrink-0"
             />
 
-            {/* Song Info */}
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-semibold text-white truncate group-hover:text-emerald-400 transition-colors">
                 {gana.title}
@@ -191,7 +173,6 @@ const LibraryPage = () => {
               <p className="text-xs text-gray-400 truncate">{gana.artist}</p>
             </div>
 
-            {/* Duration */}
             <div className="flex items-center gap-1 text-gray-500 flex-shrink-0">
               <Clock className="w-3 h-3" />
               <span className="text-xs">{gana.duration || '3:45'}</span>

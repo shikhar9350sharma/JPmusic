@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useCallback, memo } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useSong } from '../context/SongContext';
 import {
   SkipBack,
@@ -9,10 +10,11 @@ import {
   VolumeX,
   Heart,
   Repeat,
-  Shuffle
+  Shuffle,
+  Maximize2
 } from 'lucide-react';
 
-// sub-components OUTSIDE the main component
+// ==================== MOBILE CONTROLS ====================
 const MobilePlayer = memo(function MobilePlayer({
   currentTime,
   duration,
@@ -68,6 +70,7 @@ const MobilePlayer = memo(function MobilePlayer({
   );
 });
 
+// ==================== DESKTOP CONTROLS ====================
 const DesktopPlayer = memo(function DesktopPlayer({
   currentTime,
   duration,
@@ -123,93 +126,51 @@ const DesktopPlayer = memo(function DesktopPlayer({
   );
 });
 
+// ==================== MAIN MINI PLAYER ====================
 const MiniPlayer = memo(function MiniPlayer() {
   const {
     currentSong,
     isPlaying,
-    setIsPlaying,
     playNextSong,
-    playPreviousSong
+    playPreviousSong,
+    likedSongs,
+    toggleLike,
+    audioRef,
+    showMiniPlayer,
+    togglePlay
   } = useSong();
 
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  // ✅ ALL useState hooks FIRST — before any conditionals
   const [isVolumeMute, setIsVolumeMute] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [progress, setProgress] = useState(0);
-  const [likedSongs, setLikedSongs] = useState({});
   const [isShuffle, setIsShuffle] = useState(false);
   const [isRepeat, setIsRepeat] = useState(false);
 
-  const audioRef = useRef(null);
+  // ALL useRef hooks NEXT
   const rafRef = useRef(null);
 
-  // Load liked songs
-  useEffect(() => {
-    const storedLikes = JSON.parse(localStorage.getItem('likedSongs')) || {};
-    setLikedSongs(storedLikes);
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('likedSongs', JSON.stringify(likedSongs));
-  }, [likedSongs]);
-
-  // Handle song changes properly - DON'T reload if same song
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !currentSong?.audioURL) return;
-
-    // Only load if src changed
-    if (audio.src !== currentSong.audioURL) {
-      audio.src = currentSong.audioURL;
-      audio.load();
-    }
-
-    if (isPlaying) {
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(console.error);
-      }
-    }
-  }, [currentSong?.audioURL, isPlaying]);
-
-  // Handle play/pause toggle
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio || !currentSong) return;
-
-    if (isPlaying) {
-      const playPromise = audio.play();
-      if (playPromise !== undefined) {
-        playPromise.catch(console.error);
-      }
-    } else {
-      audio.pause();
-    }
-  }, [isPlaying, currentSong]);
-
-  // Cleanup
-  useEffect(() => {
-    return () => {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.pause();
-        audio.src = '';
-      }
-      if (rafRef.current) cancelAnimationFrame(rafRef.current);
-    };
-  }, []);
-
-  // Mute toggle
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.muted = isVolumeMute;
-    }
-  }, [isVolumeMute]);
-
-  // Song ended
+  // ALL useEffect hooks HERE 
   useEffect(() => {
     const audio = audioRef.current;
     if (!audio) return;
+
+    const handleTimeUpdate = () => {
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      rafRef.current = requestAnimationFrame(() => {
+        setCurrentTime(audio.currentTime);
+        const newProgress = (audio.currentTime / (audio.duration || 1)) * 100;
+        setProgress(newProgress);
+      });
+    };
+
+    const handleLoadedMetadata = () => {
+      setDuration(audio.duration);
+    };
 
     const handleEnded = () => {
       if (isRepeat) {
@@ -220,41 +181,39 @@ const MiniPlayer = memo(function MiniPlayer() {
       }
     };
 
+    audio.addEventListener('timeupdate', handleTimeUpdate);
+    audio.addEventListener('loadedmetadata', handleLoadedMetadata);
     audio.addEventListener('ended', handleEnded);
-    return () => audio.removeEventListener('ended', handleEnded);
-  }, [isRepeat, playNextSong]);
 
-  // Use requestAnimationFrame for smooth progress without excessive re-renders
-  const handleTimeUpdate = useCallback(() => {
+    return () => {
+      audio.removeEventListener('timeupdate', handleTimeUpdate);
+      audio.removeEventListener('loadedmetadata', handleLoadedMetadata);
+      audio.removeEventListener('ended', handleEnded);
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, [audioRef, isRepeat, playNextSong]);
+
+  useEffect(() => {
     const audio = audioRef.current;
-    if (!audio) return;
+    if (!audio || !currentSong?.audioURL) return;
 
-    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    if (isPlaying) {
+      const playPromise = audio.play();
+      if (playPromise !== undefined) {
+        playPromise.catch(console.error);
+      }
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying, currentSong?.audioURL, audioRef]);
 
-    rafRef.current = requestAnimationFrame(() => {
-      setCurrentTime(audio.currentTime);
-      const newProgress = (audio.currentTime / (audio.duration || 1)) * 100;
-      setProgress(newProgress);
-    });
-  }, []);
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.muted = isVolumeMute;
+    }
+  }, [isVolumeMute, audioRef]);
 
-  const handleLoadedMetadata = useCallback(() => {
-    const audio = audioRef.current;
-    if (audio) setDuration(audio.duration);
-  }, []);
-
-  const togglePlayPause = useCallback(() => {
-    setIsPlaying(!isPlaying);
-  }, [isPlaying, setIsPlaying]);
-
-  const toggleLike = useCallback(() => {
-    if (!currentSong?.id) return;
-    setLikedSongs((prev) => ({
-      ...prev,
-      [currentSong.id]: !prev[currentSong.id]
-    }));
-  }, [currentSong?.id]);
-
+  //  ALL useCallback hooks HERE
   const handleSeek = useCallback((e) => {
     const bar = e.currentTarget;
     const rect = bar.getBoundingClientRect();
@@ -272,7 +231,7 @@ const MiniPlayer = memo(function MiniPlayer() {
     if (isPlaying) {
       audio.play().catch(console.error);
     }
-  }, [duration, isPlaying]);
+  }, [duration, isPlaying, audioRef]);
 
   const formatTime = useCallback((time) => {
     if (!time || isNaN(time)) return '0:00';
@@ -281,83 +240,133 @@ const MiniPlayer = memo(function MiniPlayer() {
     return `${minutes}:${seconds}`;
   }, []);
 
+  // conditional returns — AFTER all hooks
+  if (!showMiniPlayer || !currentSong) return null;
+
+  const isOnPlayerPage = location.pathname.includes('/songs/');
+  if (isOnPlayerPage) return null;
+
+  // Navigate to full player page
+  const expandPlayer = () => {
+    if (currentSong?.id) {
+      navigate(`/app/songs/${currentSong.id}`);
+    }
+  };
+
   const isLiked = currentSong?.id ? likedSongs[currentSong.id] : false;
-  if (!currentSong) return null;
 
   return (
-    <div className="fixed md:bottom-0 bottom-16 z-50 w-full h-16 md:h-24 bg-[#121212] border-t border-gray-800 px-4 flex items-center gap-4 select-none">
-      {/* Left: Song Info */}
-      <div className="hidden md:flex items-center gap-3 w-1/4 min-w-0">
-        <img
-          src={currentSong.cover}
-          alt="cover"
-          className="w-14 h-14 rounded-lg object-cover shadow-md"
-        />
-        <div className="flex flex-col justify-center min-w-0 flex-1">
-          <h3 className="text-sm font-semibold text-white truncate">{currentSong.title}</h3>
-          <p className="text-xs text-gray-400 truncate">{currentSong.artist}</p>
+    <>
+      <div className="fixed bottom-16 md:bottom-0 left-0 right-0 z-50 bg-[#121212] border-t border-gray-800 px-4 flex items-center gap-4 select-none h-16 md:h-24">
+        
+        {/* Left: Song Info - Click to expand */}
+        <div 
+          className="hidden md:flex items-center gap-3 w-1/4 min-w-0 cursor-pointer hover:opacity-80 transition-opacity"
+          onClick={expandPlayer}
+        >
+          <img
+            src={currentSong.cover}
+            alt="cover"
+            className="w-14 h-14 rounded-lg object-cover shadow-md"
+          />
+          <div className="flex flex-col justify-center min-w-0 flex-1">
+            <h3 className="text-sm font-semibold text-white truncate">{currentSong.title}</h3>
+            <p className="text-xs text-gray-400 truncate">{currentSong.artist}</p>
+          </div>
+          <button 
+            onClick={(e) => {
+              e.stopPropagation();
+              toggleLike(currentSong.id);
+            }} 
+            className={`transition-colors ${isLiked ? 'text-emerald-500' : 'text-gray-400 hover:text-white'}`}
+          >
+            <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+          </button>
         </div>
-        <button onClick={toggleLike} className={`transition-colors ${isLiked ? 'text-emerald-500' : 'text-gray-400 hover:text-white'}`}>
-          <Heart className={`w-5 h-5 ${isLiked ? 'fill-current' : ''}`} />
+
+        {/* Mobile: Compact song info */}
+        <div 
+          className="flex md:hidden items-center gap-3 flex-shrink-0 cursor-pointer"
+          onClick={expandPlayer}
+        >
+          <img
+            src={currentSong.cover}
+            alt="cover"
+            className="w-10 h-10 rounded-lg object-cover"
+          />
+          <div className="flex flex-col justify-center max-w-[120px]">
+            <h3 className="text-xs font-semibold text-white truncate">{currentSong.title}</h3>
+            <p className="text-[10px] text-gray-400 truncate">{currentSong.artist}</p>
+          </div>
+        </div>
+
+        {/* Center: Controls */}
+        <div className="flex-1 flex justify-center">
+          <MobilePlayer
+            currentTime={currentTime}
+            duration={duration}
+            progress={progress}
+            isPlaying={isPlaying}
+            onSeek={handleSeek}
+            onPrev={playPreviousSong}
+            onToggle={togglePlay}
+            onNext={playNextSong}
+            formatTime={formatTime}
+          />
+          <DesktopPlayer
+            currentTime={currentTime}
+            duration={duration}
+            progress={progress}
+            isPlaying={isPlaying}
+            isShuffle={isShuffle}
+            isRepeat={isRepeat}
+            onShuffle={() => setIsShuffle(!isShuffle)}
+            onPrev={playPreviousSong}
+            onToggle={togglePlay}
+            onNext={playNextSong}
+            onRepeat={() => setIsRepeat(!isRepeat)}
+            onSeek={handleSeek}
+            formatTime={formatTime}
+          />
+        </div>
+
+        {/* Right: Volume + Expand */}
+        <div className="hidden md:flex items-center justify-end gap-3 w-1/4">
+          <button 
+            onClick={expandPlayer}
+            className="text-gray-400 hover:text-white transition-colors p-1"
+            title="Expand"
+          >
+            <Maximize2 className="w-5 h-5" />
+          </button>
+          <button 
+            onClick={() => setIsVolumeMute(!isVolumeMute)} 
+            className="text-gray-400 hover:text-white transition-colors p-1"
+          >
+            {isVolumeMute ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
+          </button>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.01"
+            defaultValue="1"
+            onChange={(e) => {
+              if (audioRef.current) audioRef.current.volume = parseFloat(e.target.value);
+            }}
+            className="w-24 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer accent-emerald-500"
+          />
+        </div>
+
+        {/* Mobile: Expand button */}
+        <button 
+          onClick={expandPlayer}
+          className="md:hidden text-gray-400 hover:text-white p-1"
+        >
+          <Maximize2 className="w-5 h-5" />
         </button>
       </div>
-
-      {/* Center: Controls */}
-      <div className="flex-1 flex justify-center">
-        <MobilePlayer
-          currentTime={currentTime}
-          duration={duration}
-          progress={progress}
-          isPlaying={isPlaying}
-          onSeek={handleSeek}
-          onPrev={playPreviousSong}
-          onToggle={togglePlayPause}
-          onNext={playNextSong}
-          formatTime={formatTime}
-        />
-        <DesktopPlayer
-          currentTime={currentTime}
-          duration={duration}
-          progress={progress}
-          isPlaying={isPlaying}
-          isShuffle={isShuffle}
-          isRepeat={isRepeat}
-          onShuffle={() => setIsShuffle(!isShuffle)}
-          onPrev={playPreviousSong}
-          onToggle={togglePlayPause}
-          onNext={playNextSong}
-          onRepeat={() => setIsRepeat(!isRepeat)}
-          onSeek={handleSeek}
-          formatTime={formatTime}
-        />
-      </div>
-
-      {/* Right: Volume */}
-      <div className="hidden md:flex items-center justify-end gap-3 w-1/4">
-        <button onClick={() => setIsVolumeMute(!isVolumeMute)} className="text-gray-400 hover:text-white transition-colors p-1">
-          {isVolumeMute ? <VolumeX className="w-5 h-5" /> : <Volume2 className="w-5 h-5" />}
-        </button>
-        <input
-          type="range"
-          min="0"
-          max="1"
-          step="0.01"
-          defaultValue="1"
-          onChange={(e) => {
-            if (audioRef.current) audioRef.current.volume = parseFloat(e.target.value);
-          }}
-          className="w-24 h-1 bg-gray-700 rounded-full appearance-none cursor-pointer accent-emerald-500"
-        />
-      </div>
-
-      {/* ✅ FIX: Remove key prop - let React keep the same audio element */}
-      <audio
-        ref={audioRef}
-        onTimeUpdate={handleTimeUpdate}
-        onLoadedMetadata={handleLoadedMetadata}
-        preload="metadata"
-      />
-    </div>
+    </>
   );
 });
 

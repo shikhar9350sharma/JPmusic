@@ -5,7 +5,10 @@ import { useSong } from '../context/SongContext';
 
 const QuickPlay = () => {
     const [quickPlaySongs, setQuickPlaySongs] = useState([]);
-    const { setCurrentSong, setCurrentIndex, setPlayerSongs } = useSong();
+    
+    // ✅ REPLACE: Remove setCurrentSong, setCurrentIndex, setPlayerSongs
+    // ✅ USE: playSong from context
+    const { playSong } = useSong();
     const navigate = useNavigate();
 
     const chunkArray = (array, size) => {
@@ -22,24 +25,23 @@ const QuickPlay = () => {
             .then((data) => {
                 const slicedSongs = data.slice(0, 12);
                 setQuickPlaySongs(slicedSongs);
-                setPlayerSongs(slicedSongs);
+                // ❌ REMOVE: setPlayerSongs(slicedSongs); 
+                // playSong() handles this automatically when user clicks
             })
             .catch((err) => console.error('Fetch error from QuickPlay:', err));
     }, []);
 
+    // ✅ UPDATED: Use playSong() instead of manual state updates
     const handleQuickSongsClick = (gana) => {
         const index = quickPlaySongs.findIndex(s => s.id === gana.id);
-        setPlayerSongs(quickPlaySongs);
-        setCurrentSong(gana);
-        setCurrentIndex(index);
-        setTimeout(() => navigate(`/app/songs/${gana.id}`), 50);
+        playSong(gana, quickPlaySongs, index); // ✅ Starts playback + shows mini player
+        navigate(`/app/songs/${gana.id}`);
     };
 
+    // ✅ UPDATED: Use playSong() for play all
     const handlePlayAll = () => {
         if (quickPlaySongs.length > 0) {
-            setPlayerSongs(quickPlaySongs);
-            setCurrentSong(quickPlaySongs[0]);
-            setCurrentIndex(0);
+            playSong(quickPlaySongs[0], quickPlaySongs, 0); // ✅ Starts playback + shows mini player
             navigate(`/app/songs/${quickPlaySongs[0].id}`);
         }
     };

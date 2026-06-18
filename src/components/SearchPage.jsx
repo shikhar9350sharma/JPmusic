@@ -19,7 +19,7 @@ const SearchPage = () => {
   const [filterType, setFilterType] = useState('all');
   const location = useLocation();
   const navigate = useNavigate();
-  const { setCurrentSong, setCurrentIndex, setPlayerSongs, setIsPlaying } = useSong();
+  const { playSong } = useSong();
 
   const query = new URLSearchParams(location.search).get('q');
 
@@ -49,10 +49,7 @@ const SearchPage = () => {
   }, [query]);
 
   const handleSongClick = (song, index) => {
-    setPlayerSongs(results);
-    setCurrentSong(song);
-    setCurrentIndex(index);
-    setIsPlaying(true);
+    playSong(song, results, index);
     navigate(`/app/songs/${song.id}`);
   };
 
@@ -91,7 +88,6 @@ const SearchPage = () => {
 
   return (
     <div className="px-4 md:px-0 pb-32">
-      {/* Header */}
       <div className="flex items-center gap-3 mb-6">
         <button
           onClick={() => navigate(-1)}
@@ -113,7 +109,6 @@ const SearchPage = () => {
         </div>
       </div>
 
-      {/* Filters */}
       {results.length > 0 && (
         <div className="flex items-center gap-2 mb-6 overflow-x-auto scroll-hidden pb-2">
           <Filter className="w-4 h-4 text-gray-500 flex-shrink-0" />
@@ -142,7 +137,6 @@ const SearchPage = () => {
         </div>
       )}
 
-      {/* Results */}
       {results.length === 0 ? (
         <div className="flex flex-col items-center justify-center py-20">
           <Frown className="w-16 h-16 text-gray-600 mb-4" />
@@ -160,14 +154,12 @@ const SearchPage = () => {
               onClick={() => handleSongClick(song, index)}
               className="group bg-[#1b1b1b] border border-gray-800 hover:border-gray-600 rounded-xl p-3 hover:bg-[#252525] transition-all duration-200 cursor-pointer"
             >
-              {/* Cover Image */}
               <div className="relative w-full aspect-square rounded-lg overflow-hidden mb-3">
                 <img
                   src={song.cover}
                   alt={song.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                {/* Play Overlay */}
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <div className="w-12 h-12 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg transform scale-75 group-hover:scale-100 transition-transform">
                     <Play className="w-6 h-6 text-white fill-white ml-0.5" />
@@ -175,7 +167,6 @@ const SearchPage = () => {
                 </div>
               </div>
 
-              {/* Song Info */}
               <div className="space-y-1">
                 <h3 className="text-sm font-semibold text-white truncate group-hover:text-emerald-400 transition-colors">
                   {song.title}

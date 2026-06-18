@@ -5,7 +5,7 @@ import { useSong } from '../context/SongContext';
 
 const Party = () => {
     const [partySongs, setPartySongs] = useState([]);
-    const { setCurrentIndex, setCurrentSong, setPlayerSongs, setIsPlaying } = useSong();
+    const { playSong } = useSong();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,33 +20,24 @@ const Party = () => {
 
     const handlePartyClick = (gana) => {
         const index = partySongs.findIndex((s) => s.id === gana.id);
-        setPlayerSongs(partySongs);
-        setCurrentSong(gana);
-        setCurrentIndex(index);
-        setIsPlaying(true);
+        playSong(gana, partySongs, index);
         navigate(`/app/songs/${gana.id}`);
     };
 
     const handlePlayAll = () => {
         if (partySongs.length > 0) {
-            setPlayerSongs(partySongs);
-            setCurrentSong(partySongs[0]);
-            setCurrentIndex(0);
-            setIsPlaying(true);
+            playSong(partySongs[0], partySongs, 0);
             navigate(`/app/songs/${partySongs[0].id}`);
         }
     };
 
     return (
         <div className="w-full">
-            {/* Mood Card */}
             <div className="relative w-full max-w-sm mx-auto md:mx-0 rounded-2xl overflow-hidden bg-gradient-to-br from-violet-600 via-purple-700 to-indigo-900 shadow-2xl group">
-                {/* Background Effects */}
                 <div className="absolute inset-0 opacity-30">
                     <div className="absolute top-4 right-8 w-32 h-32 rounded-full bg-fuchsia-400/40 blur-3xl animate-pulse" />
                     <div className="absolute bottom-8 left-8 w-24 h-24 rounded-full bg-yellow-400/30 blur-2xl animate-pulse" style={{ animationDelay: '0.5s' }} />
                     <div className="absolute top-1/2 left-1/2 w-20 h-20 rounded-full bg-cyan-400/20 blur-xl" />
-                    {/* Floating sparkles */}
                     {[...Array(5)].map((_, i) => (
                         <Sparkles
                             key={i}
@@ -63,12 +54,10 @@ const Party = () => {
                 </div>
 
                 <div className="relative p-6 md:p-8 flex flex-col items-center text-center gap-5">
-                    {/* Icon Badge */}
                     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-yellow-400 to-orange-500 flex items-center justify-center shadow-lg animate-bounce">
                         <PartyPopper className="w-7 h-7 text-white" />
                     </div>
 
-                    {/* Text */}
                     <div>
                         <h2 className="text-xl md:text-2xl font-bold text-white mb-2">
                             Party Plays
@@ -78,7 +67,6 @@ const Party = () => {
                         </p>
                     </div>
 
-                    {/* Song Covers */}
                     <div className="flex items-center justify-center gap-3">
                         {partySongs.map((gana, index) => (
                             <div
@@ -96,7 +84,6 @@ const Party = () => {
                                     src={gana.cover}
                                     alt={gana.title}
                                 />
-                                {/* Hover Play */}
                                 <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <Play className="w-6 h-6 text-white fill-white" />
                                 </div>
@@ -104,7 +91,6 @@ const Party = () => {
                         ))}
                     </div>
 
-                    {/* Play All Button */}
                     <button
                         onClick={handlePlayAll}
                         className="flex items-center gap-2 bg-gradient-to-r from-yellow-500 to-orange-500 hover:from-yellow-400 hover:to-orange-400 text-white py-2.5 px-6 rounded-full transition-all duration-200 font-semibold text-sm shadow-lg group/btn"
@@ -116,7 +102,6 @@ const Party = () => {
                 </div>
             </div>
 
-            {/* Songs List */}
             <div className="mt-6 space-y-2">
                 {partySongs.map((gana, index) => (
                     <div

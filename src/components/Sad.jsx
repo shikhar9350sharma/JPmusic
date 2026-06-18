@@ -5,7 +5,7 @@ import { useSong } from '../context/SongContext';
 
 const Sad = () => {
     const [sadSongs, setSadSongs] = useState([]);
-    const { setCurrentIndex, setCurrentSong, setPlayerSongs, setIsPlaying } = useSong();
+    const { playSong } = useSong();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,32 +20,23 @@ const Sad = () => {
 
     const handleSadClick = (gana) => {
         const index = sadSongs.findIndex((s) => s.id === gana.id);
-        setPlayerSongs(sadSongs);
-        setCurrentSong(gana);
-        setCurrentIndex(index);
-        setIsPlaying(true);
+        playSong(gana, sadSongs, index);
         navigate(`/app/songs/${gana.id}`);
     };
 
     const handlePlayAll = () => {
         if (sadSongs.length > 0) {
-            setPlayerSongs(sadSongs);
-            setCurrentSong(sadSongs[0]);
-            setCurrentIndex(0);
-            setIsPlaying(true);
+            playSong(sadSongs[0], sadSongs, 0);
             navigate(`/app/songs/${sadSongs[0].id}`);
         }
     };
 
     return (
         <div className="w-full">
-            {/* Mood Card */}
             <div className="relative w-full max-w-sm mx-auto md:mx-0 rounded-2xl overflow-hidden bg-gradient-to-br from-slate-800 via-blue-900 to-indigo-950 shadow-2xl group">
-                {/* Background Effects */}
                 <div className="absolute inset-0 opacity-20">
                     <div className="absolute top-6 right-6 w-28 h-28 rounded-full bg-blue-400/30 blur-3xl animate-pulse" />
                     <div className="absolute bottom-6 left-6 w-20 h-20 rounded-full bg-indigo-400/20 blur-2xl" />
-                    {/* Rain drops effect */}
                     <div className="absolute inset-0 overflow-hidden">
                         {[...Array(6)].map((_, i) => (
                             <Droplets
@@ -64,12 +55,10 @@ const Sad = () => {
                 </div>
 
                 <div className="relative p-6 md:p-8 flex flex-col items-center text-center gap-5">
-                    {/* Icon Badge */}
                     <div className="w-14 h-14 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center border border-white/20">
                         <CloudRain className="w-7 h-7 text-blue-200" />
                     </div>
 
-                    {/* Text */}
                     <div>
                         <h2 className="text-xl md:text-2xl font-bold text-white mb-2">
                             Saddy Moddy
@@ -79,7 +68,6 @@ const Sad = () => {
                         </p>
                     </div>
 
-                    {/* Song Covers */}
                     <div className="flex items-center justify-center gap-3">
                         {sadSongs.map((gana, index) => (
                             <div
@@ -97,7 +85,6 @@ const Sad = () => {
                                     src={gana.cover}
                                     alt={gana.title}
                                 />
-                                {/* Hover Play */}
                                 <div className="absolute inset-0 bg-black/50 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <Play className="w-6 h-6 text-white fill-white" />
                                 </div>
@@ -105,7 +92,6 @@ const Sad = () => {
                         ))}
                     </div>
 
-                    {/* Play All Button */}
                     <button
                         onClick={handlePlayAll}
                         className="flex items-center gap-2 bg-white/10 hover:bg-white/20 backdrop-blur-sm border border-white/20 text-white py-2.5 px-6 rounded-full transition-all duration-200 font-medium text-sm group/btn"
@@ -117,7 +103,6 @@ const Sad = () => {
                 </div>
             </div>
 
-            {/* Songs List */}
             <div className="mt-6 space-y-2">
                 {sadSongs.map((gana, index) => (
                     <div

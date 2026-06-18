@@ -7,7 +7,7 @@ import { useScrollControls } from "../hooks/useScrollControls";
 const Featured = () => {
     const [featureSongs, setFeatureSongs] = useState([]);
     const navigate = useNavigate();
-    const { setCurrentIndex, setCurrentSong, setPlayerSongs } = useSong();
+    const { playSong } = useSong();
     const { scrollRef, scrollLeft, scrollRight } = useScrollControls();
 
     useEffect(() => {
@@ -22,17 +22,13 @@ const Featured = () => {
 
     const handleFeaturedSongsClick = (gana) => {
         const index = featureSongs.findIndex(s => s.id === gana.id);
-        setPlayerSongs(featureSongs);
-        setCurrentSong(gana);
-        setCurrentIndex(index);
+        playSong(gana, featureSongs, index);
         navigate(`/app/songs/${gana.id}`);
     };
 
     const handlePlayAll = () => {
         if (featureSongs.length > 0) {
-            setPlayerSongs(featureSongs);
-            setCurrentSong(featureSongs[0]);
-            setCurrentIndex(0);
+            playSong(featureSongs[0], featureSongs, 0);
             navigate(`/app/songs/${featureSongs[0].id}`);
         }
     };
@@ -40,7 +36,6 @@ const Featured = () => {
     return (
         <div className="py-6 px-4 md:px-0">
             <div className="flex flex-col items-start gap-4">
-                {/* Header */}
                 <div className="flex items-center w-full justify-between">
                     <div className="flex items-center gap-3">
                         <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center">
@@ -51,7 +46,6 @@ const Featured = () => {
                         </h2>
                     </div>
 
-                    {/* Scroll Controls + Play All */}
                     <div className="flex items-center gap-2">
                         <div className="hidden md:flex items-center gap-1">
                             <button
@@ -77,7 +71,6 @@ const Featured = () => {
                     </div>
                 </div>
 
-                {/* Songs Carousel */}
                 <div ref={scrollRef} className="w-full overflow-x-auto scroll-hidden pb-4">
                     <div className="flex gap-4 md:gap-5">
                         {featureSongs.map((gana) => (
@@ -85,7 +78,6 @@ const Featured = () => {
                                 key={gana.id}
                                 className="group w-28 sm:w-32 md:w-36 lg:w-44 flex-shrink-0 cursor-pointer"
                             >
-                                {/* Cover Image */}
                                 <div
                                     onClick={() => handleFeaturedSongsClick(gana)}
                                     className="relative w-full aspect-square mb-3"
@@ -96,19 +88,16 @@ const Featured = () => {
                                         src={gana.cover}
                                         alt={gana.title}
                                     />
-                                    {/* Play Overlay */}
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-start p-3">
                                         <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
                                             <Play className="w-5 h-5 text-white fill-white ml-0.5" />
                                         </div>
                                     </div>
-                                    {/* Featured Badge */}
                                     <div className="absolute top-2 right-2 bg-purple-500/80 backdrop-blur-sm rounded-full p-1">
                                         <Star className="w-3 h-3 text-white fill-white" />
                                     </div>
                                 </div>
 
-                                {/* Song Info */}
                                 <div className="min-w-0 px-1">
                                     <h3 className="text-sm font-semibold text-white truncate group-hover:text-purple-400 transition-colors">
                                         {gana.title}

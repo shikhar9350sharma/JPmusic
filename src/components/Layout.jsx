@@ -68,7 +68,7 @@ const Layout = () => {
         {/* Sidebar - Desktop: left sidebar, Mobile: bottom nav */}
         <aside className={`
           flex-shrink-0 bg-[#121212] md:bg-black border-t md:border-t-0 md:border-r border-[#464646]
-          transition-all duration-300 z-50
+          transition-all duration-300 z-40
           fixed bottom-0 left-0 w-full md:static md:h-auto
           ${isSidebarOpen ? 'h-16 md:w-[220px]' : 'h-16 md:w-16'}
         `}>
@@ -110,7 +110,7 @@ const Layout = () => {
         {/* Main Content */}
         <main className={`
           flex-1 min-h-0 overflow-y-auto scroll-hidden
-          pb-24 md:pb-0
+          pb-32 md:pb-0
           transition-all duration-300
           ${isSidebarOpen ? 'md:pl-8' : 'md:pl-14'}
           pr-0 md:pr-10
@@ -118,10 +118,10 @@ const Layout = () => {
         `}>
           <Outlet />
         </main>
-
-        {/* Mini Player */}
-        <MiniPlayer />
       </div>
+
+      {/* MiniPlayer - positioned above bottom nav on mobile */}
+      <MiniPlayer />
     </div>
   )
 }

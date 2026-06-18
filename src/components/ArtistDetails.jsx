@@ -21,7 +21,7 @@ const ArtistDetails = () => {
   const [artistSongs, setArtistSongs] = useState([]);
   const [artistDetails, setArtistDetails] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-  const { setCurrentIndex, setCurrentSong, setPlayerSongs, setIsPlaying } = useSong();
+  const { playSong } = useSong();
 
   useEffect(() => {
     setIsLoading(true);
@@ -43,7 +43,6 @@ const ArtistDetails = () => {
         .then((res) => res.json())
         .then((data) => {
           setArtistSongs(data);
-          setPlayerSongs(data);
         })
         .catch((err) => console.log('Fetching songs error: ', err));
     }
@@ -51,19 +50,13 @@ const ArtistDetails = () => {
 
   const handleArtistSongClick = (gana) => {
     const index = artistSongs.findIndex((s) => s.id === gana.id);
-    setPlayerSongs(artistSongs);
-    setCurrentSong(gana);
-    setCurrentIndex(index);
-    setIsPlaying(true);
+    playSong(gana, artistSongs, index);
     navigate(`/app/songs/${gana.id}`);
   };
 
   const handlePlayAll = () => {
     if (artistSongs.length > 0) {
-      setPlayerSongs(artistSongs);
-      setCurrentSong(artistSongs[0]);
-      setCurrentIndex(0);
-      setIsPlaying(true);
+      playSong(artistSongs[0], artistSongs, 0);
       navigate(`/app/songs/${artistSongs[0].id}`);
     }
   };
@@ -99,7 +92,6 @@ const ArtistDetails = () => {
 
   return (
     <div className="p-4 md:p-6 pb-32">
-      {/* Back Button */}
       <button
         onClick={() => navigate(-1)}
         className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors mb-4 md:hidden"
@@ -108,9 +100,7 @@ const ArtistDetails = () => {
         Back
       </button>
 
-      {/* Artist Hero Section */}
       <div className="flex flex-col lg:flex-row items-start gap-6 md:gap-8">
-        {/* Cover Image */}
         <div className="w-full lg:w-2/5 flex justify-center">
           <div className="w-full max-w-sm border border-[#616161] rounded-2xl bg-[#1b1b1b] p-3 shadow-2xl">
             <div className="w-full aspect-square rounded-xl relative overflow-hidden group">
@@ -119,7 +109,6 @@ const ArtistDetails = () => {
                 src={artistDetails.cover}
                 alt={artistDetails.title}
               />
-              {/* Play Overlay */}
               <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                 <button
                   onClick={handlePlayAll}
@@ -128,7 +117,6 @@ const ArtistDetails = () => {
                   <Play className="w-8 h-8 text-white fill-white ml-1" />
                 </button>
               </div>
-              {/* Verified Badge */}
               <div className="absolute top-3 right-3 bg-blue-500 rounded-full p-1.5 shadow-lg">
                 <Mic2 className="w-4 h-4 text-white" />
               </div>
@@ -136,7 +124,6 @@ const ArtistDetails = () => {
           </div>
         </div>
 
-        {/* Artist Info */}
         <div className="w-full lg:w-3/5 flex flex-col justify-center space-y-4">
           <div>
             <div className="flex items-center gap-2 mb-2">
@@ -156,7 +143,6 @@ const ArtistDetails = () => {
             </p>
           </div>
 
-          {/* Action Buttons */}
           <div className="flex items-center gap-3 pt-2">
             <button
               onClick={handlePlayAll}
@@ -174,7 +160,6 @@ const ArtistDetails = () => {
             </button>
           </div>
 
-          {/* Stats */}
           <div className="flex items-center gap-6 pt-4 border-t border-gray-800">
             <div className="flex items-center gap-2">
               <Disc3 className="w-5 h-5 text-gray-400" />
@@ -205,7 +190,6 @@ const ArtistDetails = () => {
         </div>
       </div>
 
-      {/* Songs Section */}
       <div className="mt-10 md:mt-14">
         <div className="flex items-center justify-between mb-6">
           <div className="flex items-center gap-3">
@@ -217,7 +201,6 @@ const ArtistDetails = () => {
           <span className="text-sm text-gray-500">{artistSongs.length} tracks</span>
         </div>
 
-        {/* Songs Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-4">
           {artistSongs.map((gana, index) => (
             <div
@@ -231,13 +214,11 @@ const ArtistDetails = () => {
                   alt={gana.title}
                   className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                 />
-                {/* Play Overlay */}
                 <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                   <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg">
                     <Play className="w-5 h-5 text-white fill-white ml-0.5" />
                   </div>
                 </div>
-                {/* Track Number */}
                 <div className="absolute top-2 left-2 w-6 h-6 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center">
                   <span className="text-xs font-bold text-white">{index + 1}</span>
                 </div>

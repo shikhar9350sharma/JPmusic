@@ -5,7 +5,7 @@ import { useSong } from '../context/SongContext';
 
 const Adventure = () => {
     const [adventureSongs, setAdventureSongs] = useState([]);
-    const { setCurrentIndex, setCurrentSong, setPlayerSongs, setIsPlaying } = useSong();
+    const { playSong } = useSong();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -20,45 +20,34 @@ const Adventure = () => {
 
     const handleAdventureClick = (gana) => {
         const index = adventureSongs.findIndex((s) => s.id === gana.id);
-        setPlayerSongs(adventureSongs);
-        setCurrentSong(gana);
-        setCurrentIndex(index);
-        setIsPlaying(true);
+        playSong(gana, adventureSongs, index);
         navigate(`/app/songs/${gana.id}`);
     };
 
     const handlePlayAll = () => {
         if (adventureSongs.length > 0) {
-            setPlayerSongs(adventureSongs);
-            setCurrentSong(adventureSongs[0]);
-            setCurrentIndex(0);
-            setIsPlaying(true);
+            playSong(adventureSongs[0], adventureSongs, 0);
             navigate(`/app/songs/${adventureSongs[0].id}`);
         }
     };
 
     return (
         <div className="w-full">
-            {/* Mood Card */}
             <div className="relative w-full max-w-sm mx-auto md:mx-0 rounded-2xl overflow-hidden bg-gradient-to-br from-orange-600 via-red-600 to-amber-800 shadow-2xl group">
-                {/* Background Effects */}
                 <div className="absolute inset-0 opacity-25">
                     <div className="absolute top-6 right-6 w-36 h-36 rounded-full bg-orange-400/40 blur-3xl animate-pulse" />
                     <div className="absolute bottom-4 left-4 w-28 h-28 rounded-full bg-yellow-400/30 blur-2xl" />
                     <div className="absolute top-1/3 left-1/2 w-20 h-20 rounded-full bg-red-400/20 blur-xl animate-pulse" style={{ animationDelay: '0.7s' }} />
-                    {/* Floating elements */}
                     <Mountain className="absolute top-8 left-8 w-16 h-16 text-white/5 rotate-12" />
                     <MapPin className="absolute bottom-12 right-10 w-12 h-12 text-white/5 -rotate-12" />
                     <Wind className="absolute top-1/2 right-4 w-10 h-10 text-white/5" />
                 </div>
 
                 <div className="relative p-6 md:p-8 flex flex-col items-center text-center gap-5">
-                    {/* Icon Badge */}
                     <div className="w-14 h-14 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center shadow-lg">
                         <Compass className="w-7 h-7 text-white" />
                     </div>
 
-                    {/* Text */}
                     <div>
                         <h2 className="text-xl md:text-2xl font-bold text-white mb-2">
                             Adventurer List
@@ -68,7 +57,6 @@ const Adventure = () => {
                         </p>
                     </div>
 
-                    {/* Song Covers */}
                     <div className="flex items-center justify-center gap-3">
                         {adventureSongs.map((gana, index) => (
                             <div
@@ -86,7 +74,6 @@ const Adventure = () => {
                                     src={gana.cover}
                                     alt={gana.title}
                                 />
-                                {/* Hover Play */}
                                 <div className="absolute inset-0 bg-black/40 opacity-0 hover:opacity-100 transition-opacity flex items-center justify-center">
                                     <Play className="w-6 h-6 text-white fill-white" />
                                 </div>
@@ -94,7 +81,6 @@ const Adventure = () => {
                         ))}
                     </div>
 
-                    {/* Play All Button */}
                     <button
                         onClick={handlePlayAll}
                         className="flex items-center gap-2 bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-400 hover:to-orange-500 text-white py-2.5 px-6 rounded-full transition-all duration-200 font-semibold text-sm shadow-lg group/btn"
@@ -106,7 +92,6 @@ const Adventure = () => {
                 </div>
             </div>
 
-            {/* Songs List */}
             <div className="mt-6 space-y-2">
                 {adventureSongs.map((gana, index) => (
                     <div

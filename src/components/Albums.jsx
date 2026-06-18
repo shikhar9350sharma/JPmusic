@@ -5,7 +5,9 @@ import { useSong } from '../context/SongContext';
 
 const Albums = () => {
     const [albumSongs, setAlbumSongs] = useState([]);
-    const { setCurrentIndex, setCurrentSong, setPlayerSongs } = useSong();
+    
+    //  playSong from context
+    const { playSong } = useSong();
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -18,19 +20,17 @@ const Albums = () => {
             .catch((err) => console.error('Fetch error from album component:', err));
     }, []);
 
+    //  playSong() instead of manual state updates
     const handleAlbumClick = (gana) => {
         const index = albumSongs.findIndex(s => s.id === gana.id);
-        setPlayerSongs(albumSongs);
-        setCurrentSong(gana);
-        setCurrentIndex(index);
-        navigate(`/app/songs/${gana.id}`);
+        playSong(gana, albumSongs, index); // ✅ Starts playback + shows mini player
+        navigate(`/app/songs/${gana.id}`); // Navigate to full player
     };
 
+    //  playSong() for play all
     const handlePlayAll = () => {
         if (albumSongs.length > 0) {
-            setPlayerSongs(albumSongs);
-            setCurrentSong(albumSongs[0]);
-            setCurrentIndex(0);
+            playSong(albumSongs[0], albumSongs, 0); // ✅ Starts playback + shows mini player
             navigate(`/app/songs/${albumSongs[0].id}`);
         }
     };

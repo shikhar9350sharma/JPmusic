@@ -16,7 +16,7 @@ const English = () => {
   const scrollRef = useRef(null);
   const [englishSongs, setEnglishSongs] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { setCurrentIndex, setCurrentSong, setPlayerSongs, setIsPlaying } = useSong();
+  const { playSong } = useSong();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,22 +36,16 @@ const English = () => {
 
   const handleEnglishClick = (gana) => {
     const index = englishSongs.findIndex((s) => s.id === gana.id);
-    setPlayerSongs(englishSongs);
-    setCurrentSong(gana);
-    setCurrentIndex(index);
-    setIsPlaying(true);
+    playSong(gana, englishSongs, index);
     navigate(`/app/songs/${gana.id}`);
   };
 
   const handlePlayAll = useCallback(() => {
     if (englishSongs.length > 0) {
-      setPlayerSongs(englishSongs);
-      setCurrentSong(englishSongs[0]);
-      setCurrentIndex(0);
-      setIsPlaying(true);
+      playSong(englishSongs[0], englishSongs, 0);
       navigate(`/app/songs/${englishSongs[0].id}`);
     }
-  }, [englishSongs]);
+  }, [englishSongs, playSong, navigate]);
 
   const scrollLeft = useCallback(() => {
     if (scrollRef.current) {
@@ -85,7 +79,6 @@ const English = () => {
 
   return (
     <div className="py-6 px-4 md:px-0 relative">
-      {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center">
@@ -96,7 +89,6 @@ const English = () => {
           </h2>
         </div>
 
-        {/* Scroll Controls + Play All */}
         <div className="flex items-center gap-2">
           <div className="hidden md:flex items-center gap-1">
             <button
@@ -122,7 +114,6 @@ const English = () => {
         </div>
       </div>
 
-      {/* Scrollable Songs */}
       <div ref={scrollRef} className="w-full overflow-x-auto scroll-hidden pb-4">
         <div className="flex gap-4 md:gap-5">
           {englishSongs.map((gana, index) => (
@@ -130,7 +121,6 @@ const English = () => {
               key={gana.id}
               className="group w-28 sm:w-32 md:w-36 lg:w-44 flex-shrink-0 cursor-pointer"
             >
-              {/* Cover Image */}
               <div
                 onClick={() => handleEnglishClick(gana)}
                 className="relative w-full aspect-square mb-3"
@@ -141,24 +131,20 @@ const English = () => {
                   src={gana.cover}
                   alt={gana.title}
                 />
-                {/* Play Overlay */}
                 <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-end justify-start p-3">
                   <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center shadow-lg transform translate-y-2 group-hover:translate-y-0 transition-transform">
                     <Play className="w-5 h-5 text-white fill-white ml-0.5" />
                   </div>
                 </div>
-                {/* Language Badge */}
                 <div className="absolute top-2 left-2 bg-blue-500/90 backdrop-blur-sm rounded-full px-2 py-0.5 flex items-center gap-1">
                   <Globe className="w-3 h-3 text-white" />
                   <span className="text-[10px] font-bold text-white uppercase">EN</span>
                 </div>
-                {/* Track Number */}
                 <div className="absolute top-2 right-2 w-6 h-6 bg-black/60 backdrop-blur-sm rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
                   <span className="text-xs font-bold text-white">{index + 1}</span>
                 </div>
               </div>
 
-              {/* Song Info */}
               <div className="min-w-0 px-1">
                 <h3 className="text-sm font-semibold text-white truncate group-hover:text-blue-400 transition-colors">
                   {gana.title}
