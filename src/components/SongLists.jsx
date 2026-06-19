@@ -43,7 +43,6 @@ const SongList = () => {
 
     return (
         <div className="py-6 px-4 md:px-0">
-            {/* Header */}
             <div className="flex items-center justify-between mb-6">
                 <div className="flex items-center gap-3">
                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-teal-600 flex items-center justify-center">
@@ -57,7 +56,6 @@ const SongList = () => {
                     </span>
                 </div>
 
-                {/* View Toggle */}
                 <div className="flex items-center gap-1 bg-[#2b2b2b] rounded-lg p-1">
                     <button
                         onClick={() => setViewMode('grid')}
@@ -82,7 +80,6 @@ const SongList = () => {
                 </div>
             </div>
 
-            {/* Songs Grid */}
             <div className={`
                 ${viewMode === 'grid' 
                     ? 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6' 
