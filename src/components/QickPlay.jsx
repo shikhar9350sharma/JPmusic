@@ -2,12 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, Clock, ChevronRight, Music } from 'lucide-react';
 import { useSong } from '../context/SongContext';
+import { QuickPickSkeleton } from './SkeletonLoader';
 
 const QuickPlay = () => {
     const [quickPlaySongs, setQuickPlaySongs] = useState([]);
-    
-    // ✅ REPLACE: Remove setCurrentSong, setCurrentIndex, setPlayerSongs
-    // ✅ USE: playSong from context
+    const [isLoading, setIsLoading] = useState(true);
+
+
     const { playSong } = useSong();
     const navigate = useNavigate();
 
@@ -20,31 +21,33 @@ const QuickPlay = () => {
     };
 
     useEffect(() => {
+        setIsLoading(true);
         fetch('https://music-api-gamma.vercel.app/songs')
             .then((res) => res.json())
             .then((data) => {
                 const slicedSongs = data.slice(0, 12);
                 setQuickPlaySongs(slicedSongs);
-                // ❌ REMOVE: setPlayerSongs(slicedSongs); 
-                // playSong() handles this automatically when user clicks
+
             })
-            .catch((err) => console.error('Fetch error from QuickPlay:', err));
+            .catch((err) => console.error('Fetch error from QuickPlay:', err))
+            .finally(() => setIsLoading(false));
     }, []);
 
-    // ✅ UPDATED: Use playSong() instead of manual state updates
     const handleQuickSongsClick = (gana) => {
         const index = quickPlaySongs.findIndex(s => s.id === gana.id);
-        playSong(gana, quickPlaySongs, index); // ✅ Starts playback + shows mini player
+        playSong(gana, quickPlaySongs, index);
         navigate(`/app/songs/${gana.id}`);
     };
 
-    // ✅ UPDATED: Use playSong() for play all
     const handlePlayAll = () => {
         if (quickPlaySongs.length > 0) {
-            playSong(quickPlaySongs[0], quickPlaySongs, 0); // ✅ Starts playback + shows mini player
-            navigate(`/app/songs/${quickPlaySongs[0].id}`);
+            playSong(quickPlaySongs[0], quickPlaySongs, 0);
         }
     };
+
+    if (isLoading) {
+        return <QuickPickSkeleton />;
+    }
 
     return (
         <div className="flex flex-col gap-4 py-6 px-4 md:px-0">
@@ -58,7 +61,7 @@ const QuickPlay = () => {
                         Quick Picks
                     </h2>
                 </div>
-                <button 
+                <button
                     onClick={handlePlayAll}
                     className="flex items-center gap-1 text-sm text-gray-400 hover:text-white transition-colors group"
                 >

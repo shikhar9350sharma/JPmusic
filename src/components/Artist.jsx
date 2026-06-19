@@ -1,21 +1,28 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Mic2, ChevronRight, Users, Play } from 'lucide-react';
+import { ArtistSkeleton } from './SkeletonLoader';
 
 const Artist = () => {
     const [artists, setArtists] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
 
     useEffect(() => {
+        setIsLoading(true);
         fetch('https://music-api-gamma.vercel.app/artists')
             .then((res) => res.json())
             .then((data) => setArtists(data))
-            .catch((err) => console.error('Fetch error from Artist:', err));
+            .catch((err) => console.error('Fetch error from Artist:', err))
+            .finally(() => setIsLoading(false));   
     }, []);
 
     const handleArtistClick = (artist) => {
         navigate(`/app/artists/${artist.id}`);
     };
+    if (isLoading) {
+        return <ArtistSkeleton />;
+    }
 
     return (
         <div className="py-6 px-4 md:px-0">

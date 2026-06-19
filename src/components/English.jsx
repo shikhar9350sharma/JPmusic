@@ -11,6 +11,7 @@ import {
   Mic2
 } from 'lucide-react';
 import { useSong } from '../context/SongContext';
+import {CarouselSkeleton} from './SkeletonLoader';
 
 const English = () => {
   const scrollRef = useRef(null);
@@ -26,12 +27,9 @@ const English = () => {
       .then((data) => {
         const slicedSongs = data.slice(0, 8);
         setEnglishSongs(slicedSongs);
-        setIsLoading(false);
       })
-      .catch((err) => {
-        console.log('Fetching english songs error: ', err);
-        setIsLoading(false);
-      });
+      .catch((err) =>console.log('Fetching english songs error: ', err))
+      .finally(() => setIsLoading(false));
   }, []);
 
   const handleEnglishClick = (gana) => {
@@ -61,19 +59,7 @@ const English = () => {
 
   if (isLoading) {
     return (
-      <div className="py-6 px-4 md:px-0">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="w-8 h-8 rounded-full bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center animate-pulse">
-            <Globe className="w-4 h-4 text-white" />
-          </div>
-          <div className="h-8 w-48 bg-gray-800 rounded animate-pulse" />
-        </div>
-        <div className="flex gap-4 overflow-hidden">
-          {[...Array(4)].map((_, i) => (
-            <div key={i} className="w-32 h-40 bg-gray-800 rounded-xl animate-pulse flex-shrink-0" />
-          ))}
-        </div>
-      </div>
+      <CarouselSkeleton />
     );
   }
 

@@ -2,21 +2,26 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Music, Play, Music2, ArrowRight, Flame, Star } from 'lucide-react';
 import { useSong } from '../context/SongContext';
+import { MoodCardSkeleton, SongRowSkeleton } from './SkeletonLoader';
 
 const Punjabi = () => {
     const [punjabiSongs, setPunjabiSongs] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const { playSong } = useSong();
     const navigate = useNavigate();
 
     useEffect(() => {
+        setIsLoading(true);
         fetch('https://music-api-gamma.vercel.app/punjabi')
             .then((res) => res.json())
             .then((data) => {
                 const slicedSongs = data.slice(0, 8);
                 setPunjabiSongs(slicedSongs);
             })
-            .catch((err) => console.error('Fetch error from Punjabi:', err));
+            .catch((err) => console.error('Fetch error from Punjabi:', err))
+            .finally(() => setIsLoading(false));
     }, []);
+    
 
     const handlePunjabiClick = (gana) => {
         const index = punjabiSongs.findIndex((s) => s.id === gana.id);
@@ -30,6 +35,12 @@ const Punjabi = () => {
             navigate(`/app/songs/${punjabiSongs[0].id}`);
         }
     };
+    if (isLoading) {
+        return <>
+            <MoodCardSkeleton/>
+            <SongRowSkeleton/>
+        </>
+    }
 
     return (
         <div className="w-full">

@@ -3,22 +3,27 @@ import { useNavigate } from 'react-router-dom';
 import { Star, Play, ChevronLeft, ChevronRight, Music2, Sparkles } from 'lucide-react';
 import { useSong } from '../context/SongContext';
 import { useScrollControls } from "../hooks/useScrollControls";
+import { SectionHeaderSkeleton, CarouselSkeleton } from './SkeletonLoader';
 
 const Featured = () => {
     const [featureSongs, setFeatureSongs] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
     const { playSong } = useSong();
     const { scrollRef, scrollLeft, scrollRight } = useScrollControls();
 
     useEffect(() => {
+        setIsLoading(true);
         fetch('https://music-api-gamma.vercel.app/songs')
             .then((res) => res.json())
             .then((data) => {
                 const slicedSongs = data.slice(55, 63);
                 setFeatureSongs(slicedSongs);
             })
-            .catch((err) => console.error('Fetch error from Featured:', err));
+            .catch((err) => console.error('Fetch error from Featured:', err))
+            .finally(() => setIsLoading(false));
     }, []);
+    
 
     const handleFeaturedSongsClick = (gana) => {
         const index = featureSongs.findIndex(s => s.id === gana.id);
@@ -32,6 +37,14 @@ const Featured = () => {
             navigate(`/app/songs/${featureSongs[0].id}`);
         }
     };
+    if (isLoading) {
+        return (
+            <div className="w-full py-6 px-4 md:px-0">
+                <SectionHeaderSkeleton />
+                <CarouselSkeleton count={5} />
+            </div>
+        );
+    }
 
     return (
         <div className="py-6 px-4 md:px-0">

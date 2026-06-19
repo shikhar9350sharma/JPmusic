@@ -2,21 +2,26 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { RotateCcw, Play, ChevronRight, Music2 } from "lucide-react";
 import { useSong } from "../context/SongContext";
+import { SectionHeaderSkeleton, CarouselSkeleton } from './SkeletonLoader';
 
 const ListenAgain = () => {
     const [listenAgainSongs, setListenAgainSongs] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const { playSong } = useSong();
     const navigate = useNavigate();
 
     useEffect(() => {
+        setIsLoading(true);
         fetch('https://music-api-gamma.vercel.app/songs')
             .then((res) => res.json())
             .then((data) => {
                 const slicedSongs = data.slice(12, 24);
                 setListenAgainSongs(slicedSongs);
             })
-            .catch((err) => console.log('Fetching song cover error: ', err));
+            .catch((err) => console.log('Fetching song cover error: ', err))
+            .finally(() => setIsLoading(false));
     }, []);
+
 
     const handleListenAgainClick = (gana) => {
         const index = listenAgainSongs.findIndex(s => s.id === gana.id);
@@ -30,6 +35,15 @@ const ListenAgain = () => {
             navigate(`/app/songs/${listenAgainSongs[0].id}`);
         }
     };
+    
+    if (isLoading) {
+        return (
+            <div className="w-full py-6 px-4 md:px-0">
+                <SectionHeaderSkeleton />
+                <CarouselSkeleton count={5} />
+            </div>
+        );
+    }
 
     return (
         <div className="w-full py-6 px-4 md:px-0 relative">
@@ -42,7 +56,7 @@ const ListenAgain = () => {
                         Listen Again
                     </h2>
                 </div>
-                <button 
+                <button
                     onClick={handlePlayAll}
                     className="flex items-center gap-1 text-sm text-gray-400 hover:text-white transition-colors group"
                 >
@@ -58,7 +72,7 @@ const ListenAgain = () => {
                             key={gana.id}
                             className="group w-28 sm:w-32 md:w-36 lg:w-44 flex-shrink-0 cursor-pointer"
                         >
-                            <div 
+                            <div
                                 onClick={() => handleListenAgainClick(gana)}
                                 className="relative w-full aspect-square mb-3"
                             >

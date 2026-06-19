@@ -2,38 +2,43 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Play, Plus, Disc3, TrendingUp } from 'lucide-react';
 import { useSong } from '../context/SongContext';
+import { HeroSkeleton } from './SkeletonLoader';
 
 const Albums = () => {
     const [albumSongs, setAlbumSongs] = useState([]);
-    
-    //  playSong from context
+    const [isLoading, setIsLoading] = useState(true);
     const { playSong } = useSong();
     const navigate = useNavigate();
 
+    // Fetch data
     useEffect(() => {
+        setIsLoading(true);
         fetch('https://music-api-gamma.vercel.app/songs')
             .then((res) => res.json())
             .then((data) => {
                 const slicedSongs = data.slice(90, 93);
                 setAlbumSongs(slicedSongs);
             })
-            .catch((err) => console.error('Fetch error from album component:', err));
+            .catch((err) => console.error('Fetch error from album component:', err))
+            .finally(() => setIsLoading(false)); 
     }, []);
 
-    //  playSong() instead of manual state updates
     const handleAlbumClick = (gana) => {
         const index = albumSongs.findIndex(s => s.id === gana.id);
-        playSong(gana, albumSongs, index); // ✅ Starts playback + shows mini player
-        navigate(`/app/songs/${gana.id}`); // Navigate to full player
+        playSong(gana, albumSongs, index);
+        navigate(`/app/songs/${gana.id}`);
     };
 
-    //  playSong() for play all
     const handlePlayAll = () => {
         if (albumSongs.length > 0) {
-            playSong(albumSongs[0], albumSongs, 0); // ✅ Starts playback + shows mini player
+            playSong(albumSongs[0], albumSongs, 0);
             navigate(`/app/songs/${albumSongs[0].id}`);
         }
     };
+
+    if (isLoading) {
+        return <HeroSkeleton />;
+    }
 
     return (
         <div className="px-4 md:px-0">
@@ -86,7 +91,6 @@ const Albums = () => {
                                 src={gana.cover}
                                 alt={gana.title}
                             />
-                            {/* Hover Overlay */}
                             <div className="absolute inset-0 bg-black/40 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                                 <div className="w-10 h-10 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center">
                                     <Play className="w-5 h-5 text-white fill-white" />

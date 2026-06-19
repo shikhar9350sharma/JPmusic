@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { AlbumDetailSkeleton } from './SkeletonLoader';
 import {
   Library,
   Disc3,
@@ -26,12 +27,9 @@ const LibraryPage = () => {
         .then((res) => res.json())
         .then((data) => {
           setAlbumSongs(data);
-          setIsLoading(false);
         })
-        .catch((err) => {
-          console.log('Fetching songs in LibraryPage error: ', err);
-          setIsLoading(false);
-        });
+        .catch((err) => console.log('Fetching songs in LibraryPage error: ', err))
+        .finally(() => setIsLoading(false));
     }
   }, [id]);
 
@@ -40,6 +38,11 @@ const LibraryPage = () => {
     playSong(gana, albumSongs, index);
     navigate(`/app/songs/${gana.id}`);
   };
+  
+  if (isLoading) {
+    return <AlbumDetailSkeleton />;
+  }
+
 
   const handlePlayAll = () => {
     if (albumSongs.length > 0) {
@@ -48,16 +51,6 @@ const LibraryPage = () => {
     }
   };
 
-  if (isLoading) {
-    return (
-      <div className="h-[calc(100vh-180px)] flex items-center justify-center">
-        <div className="flex flex-col items-center gap-4 animate-pulse">
-          <Library className="w-12 h-12 text-gray-600" />
-          <p className="text-gray-400">Loading album...</p>
-        </div>
-      </div>
-    );
-  }
 
   if (albumSongs.length === 0) {
     return (

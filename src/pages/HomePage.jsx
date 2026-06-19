@@ -1,21 +1,22 @@
-
-import { useState, useEffect } from 'react'
-import Albums from './Albums'
-import QuickPlay from './QickPlay'
-import ListenAgain from './ListenAgain'
-import Featured from './Featured'
-import Artist from './Artist'
+import { useState, useEffect } from 'react';
+import { Loader2, Music2 } from 'lucide-react';
+import Albums from './Albums';
+import QuickPlay from './QickPlay';
+import ListenAgain from './ListenAgain';
+import Featured from './Featured';
+import Artist from './Artist';
 
 const HomePage = () => {
+
   return (
-    <div className='pt-0 sm:pt-2 md:pt-10 pb-32 md:pb-24'>
-      <Albums/>
-      <QuickPlay/>
+    <div className='pt-4 md:pt-5 pb-16 md:pb-24'>
+      <Albums />
+      <QuickPlay />
       <ListenAgain />
       <Featured />
       <Artist />
     </div>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;
